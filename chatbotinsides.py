@@ -4,7 +4,10 @@ from langchain_core.messages import BaseMessage, HumanMessage
 from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 from langgraph.graph.message import add_messages
-from langgraph.checkpoint.memory import MemorySaver
+from langgraph.checkpoint.sqlite import SqliteSaver
+import sqlite3
+
+
 
 load_dotenv()
 
@@ -22,8 +25,8 @@ def chatnode(state: chatstate):
 
     return {"messages" : result}
 
-
-checkpointer = MemorySaver()
+conn = sqlite3.connect (database = "chatbot.db", check_same_thread=False)
+checkpointer = SqliteSaver(conn=conn)
 
 graph = StateGraph(chatstate)
 
@@ -34,30 +37,16 @@ graph.add_edge("chatnode",END)
 
 workflow = graph.compile(checkpointer=checkpointer)
 
+def retrieve_all_threads():
+    all_threads = set()
+    for checkpoint in checkpointer.list(None):
+        all_threads.add(checkpoint.config['configurable']['thread_id'])
 
-#initialstate ={
-#    "messages": [ HumanMessage(content='What is the capital of india')]
-#}
-#
-#finalstate = workflow.invoke(initialstate)["messages"][-1].content
-#print(finalstate)
-
-threadid = '1'
-if __name__ == "__main__":
-
-    while True:
-     
-        userquery = input("Ask here: ")
-
-        print ("Human Message:" , userquery)
-
-        if userquery.strip().lower() in ["bye" , "exit" , "stop"]:
-            break
-       #config
-        config = {'configurable':{'thread_id': threadid}}
+    return list(all_threads)
 
 
-        opstate = workflow.invoke({"messages": HumanMessage(content= userquery)} , config=config)
 
-        print("AI message:" , opstate["messages"][-1].content)
+
+
+
 
