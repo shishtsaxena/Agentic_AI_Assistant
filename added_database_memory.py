@@ -31,7 +31,7 @@ if "thread_id" not in st.session_state:
     st.session_state["thread_id"] = genreate_thread_id()
 
 if "chat_threads" not in st.session_state:
-    st.session_state["chat_threads"] = [retrieve_all_threads] 
+    st.session_state["chat_threads"] = retrieve_all_threads() 
 
 add_thread(st.session_state["thread_id"])
 
