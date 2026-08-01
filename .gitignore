@@ -1,3 +1,5 @@
 .env
 agchatbot/
 __pycache__/
+chatbot2.db-shm
+chatbot2.db-wal
