@@ -1,6 +1,6 @@
 
 
-# there may be possibiity that this mcp part file should not work properly
+# there may be a possibiity that this mcp part file should not work properly
 # in my pc it is working correctly but in other pc it may not work properly because of the mcp server url
 
 
